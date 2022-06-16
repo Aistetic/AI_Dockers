@@ -1,0 +1,9 @@
+Debug:
+  mode: 'on'
+
+openpose:
+  model_folder: '/app/model/Openpose_model'
+  number_people_max: 1
+  disable_multi_thread: False
+  maximize_positives: True
+  face: True

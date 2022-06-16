@@ -1,0 +1,25 @@
+version: '3'
+
+services:
+  openpose:
+    image: openpose:latest
+    container_name: openpose_service
+    command:
+      - '-render_pose=1' # Render the pose, 0 = false, 1 = true. Turn off for quick process in develop environment.
+      - '-face=True'
+      - '-hand=True'
+      - '-number_people_max=1' # change to -1 if you want to detect multiple people
+    volumes:
+      - ./Debug:/Debug # You need to change this value to align with you debug path
+      - ./src:/app/src
+    ports:
+      - 9999:8080
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # add if that you can run localhost
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: [ '0' ]
+              capabilities: [ gpu ]
