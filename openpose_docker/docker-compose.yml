@@ -1,19 +1,47 @@
 version: '3'
 
 services:
-  openpose:
-    image: openpose:latest
-    container_name: openpose_service
+  openpose_male:
+    image: synthesis_openpose:latest
+    container_name: synthesis_openpose_service_male
     command:
       - '-render_pose=1' # Render the pose, 0 = false, 1 = true. Turn off for quick process in develop environment.
-      - '-face=True'
-      - '-hand=True'
+      - '-face=False'
+      - '-hand=False'
       - '-number_people_max=1' # change to -1 if you want to detect multiple people
+      - '-input_folder=/data'
     volumes:
       - ./Debug:/Debug # You need to change this value to align with you debug path
       - ./src:/app/src
+      - /home/ubuntu/SharedFile/Aistetic/Datas/Shapenet_dataset/random_pose/male:/data
     ports:
       - 9999:8080
+    extra_hosts:
+      - "host.docker.internal:host-gateway" # add if that you can run localhost
+    deploy:
+      resources:
+        reservations:
+          devices:
+            - driver: nvidia
+              device_ids: [ '0' ]
+              capabilities: [ gpu ]
+
+
+  openpose_female:
+    image: synthesis_openpose:latest
+    container_name: synthesis_openpose_service_female
+    command:
+      - '-render_pose=1' # Render the pose, 0 = false, 1 = true. Turn off for quick process in develop environment.
+      - '-face=False'
+      - '-hand=False'
+      - '-number_people_max=1' # change to -1 if you want to detect multiple people
+      - '-input_folder=/data'
+    volumes:
+      - ./Debug:/Debug # You need to change this value to align with you debug path
+      - ./src:/app/src
+      - /home/ubuntu/SharedFile/Aistetic/Datas/Shapenet_dataset/random_pose/female:/data
+    ports:
+      - 9998:8080
     extra_hosts:
       - "host.docker.internal:host-gateway" # add if that you can run localhost
     deploy:
